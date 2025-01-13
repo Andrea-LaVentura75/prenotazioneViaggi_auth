@@ -2,6 +2,7 @@ package it.epicode.progetto.settimanale.prenotazioneViaggi.dipendente;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,10 +10,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/dipendenti")
+@PreAuthorize("isAuthenticated()")
 public class DipendenteController {
 
     @Autowired
     private DipendenteService dipendenteService;
+
 
 
     @GetMapping
@@ -28,6 +31,7 @@ public class DipendenteController {
 
 
     @PostMapping(consumes = {"multipart/form-data"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Dipendente> createDipendente(@RequestParam("username") String username,
                                                        @RequestParam("nome") String nome,
                                                        @RequestParam("cognome") String cognome,
@@ -46,6 +50,7 @@ public class DipendenteController {
 
 
     @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Dipendente> updateDipendente(
             @PathVariable Long id,
             @RequestParam("username") String username,
@@ -74,6 +79,7 @@ public class DipendenteController {
 
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteDipendente(@PathVariable Long id) {
         dipendenteService.deleteById(id);
         return ResponseEntity.noContent().build();
